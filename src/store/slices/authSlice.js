@@ -1,53 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state for authentication
 const initialState = {
-  user: null,
-  token: localStorage.getItem('token') || null,
-  isAuthenticated: Boolean(localStorage.getItem('token')),
-  loading: false,
-  error: null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
+  isAuthenticated: Boolean(localStorage.getItem("token"))
 };
 
 // Create the auth slice
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    // Set loading state
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
-    
+
     // Handle login success
     loginSuccess: (state, action) => {
       state.isAuthenticated = true;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.loading = false;
-      state.error = null;
+      state.user = {
+        name: action.payload.name,
+        email: action.payload.email,
+        _id: action.payload._id,
+        createdAt: action.payload.createdAt,
+        updatedAt: action.payload.updatedAt,
+      };
+      state.token = action.payload.accessToken;
       // Save token to localStorage
-      localStorage.setItem('token', action.payload.token);
-    },
-    
-    // Handle register success
-    registerSuccess: (state, action) => {
-      state.isAuthenticated = true;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.loading = false;
-      state.error = null;
-      // Save token to localStorage
-      localStorage.setItem('token', action.payload.token);
-    },
-    
-    // Handle auth error
-    authError: (state, action) => {
-      state.isAuthenticated = false;
-      state.user = null;
-      state.token = null;
-      state.loading = false;
-      state.error = action.payload;
+      localStorage.setItem("token", action.payload.accessToken);
+      localStorage.setItem("user", JSON.stringify({
+        name: action.payload.name,
+        email: action.payload.email,
+        _id: action.payload._id,
+        createdAt: action.payload.createdAt,
+        updatedAt: action.payload.updatedAt,
+      }));
     },
     
     // Handle logout
@@ -55,19 +40,14 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-      state.error = null;
       // Remove token from localStorage
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 });
 
-export const { 
-  setLoading, 
-  loginSuccess, 
-  registerSuccess, 
-  authError, 
-  logout 
-} = authSlice.actions;
+export const { setLoading, loginSuccess, registerSuccess, authError, logout } =
+  authSlice.actions;
 
-export default authSlice.reducer; 
+export default authSlice.reducer;
