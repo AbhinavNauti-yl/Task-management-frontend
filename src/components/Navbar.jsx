@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
+import { motion } from "motion/react"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [isScrolled, setIscrolled] = useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      setIscrolled(window.scrollY > 0)
+    })
+
+    return window.removeEventListener("scroll", () => {
+      setIscrolled(window.scrollY > 0)
+    })
+  }, [])
 
   const handleLogout = () => {
     dispatch(logout());
@@ -15,9 +27,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white shadow-md">
+    <nav className={` fixed z-50 w-full bg-white text-black  ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-lg" : "bg-transparent"} `}>
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-2">
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold">
@@ -46,18 +58,18 @@ const Navbar = () => {
               <>
                 <Link 
                   to="/dashboard" 
-                  className="py-2 px-3 rounded hover:bg-blue-700 transition-colors"
+                  className="py-2 px-3 rounded hover:bg-blue-100 transition-colors"
                 >
                   Dashboard
                 </Link>
                 <Link 
                   to="/tasks/create" 
-                  className="py-2 px-3 rounded hover:bg-blue-700 transition-colors"
+                  className="py-2 px-3 rounded hover:bg-blue-100 transition-colors"
                 >
                   New Task
                 </Link>
                 <div className="relative ml-4 group">
-                  <button className="flex items-center py-2 px-3 rounded hover:bg-blue-700 transition-colors">
+                  <button className="flex items-center py-2 px-3 rounded hover:bg-blue-100 transition-colors">
                     <span className="mr-1">{user?.name || 'User'}</span>
                     <svg 
                       className="h-4 w-4" 
@@ -73,7 +85,7 @@ const Navbar = () => {
                       />
                     </svg>
                   </button>
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+                  <div className="absolute right-0 mt-0 w-30 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
                     <Link 
                       to="/profile" 
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -111,7 +123,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white focus:outline-none"
+              className="text-black focus:outline-none"
             >
               <svg 
                 className="h-6 w-6" 
@@ -141,7 +153,15 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-blue-600 pb-4">
+          <motion.div className="md:hidden bg-black/60 text-white pb-4  "
+            initial= {{
+              opacity: 0
+            }}
+            whileInView={{
+              opacity: 1,
+              animationDuration:3000
+            }}
+          >
             {isAuthenticated ? (
               <div className="flex flex-col space-y-2">
                 <Link 
@@ -193,7 +213,7 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
-          </div>
+          </motion.div>
         )}
       </div>
     </nav>

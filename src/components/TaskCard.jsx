@@ -81,7 +81,7 @@ const TaskCard = ({ task, onDelete }) => {
       
       <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
         <Link 
-          to={`/tasks/${task._id}/edit`}
+          to={`/tasks/edit/${task._id}`}
           className="text-sm bg-blue-50 text-blue-600 py-1 px-3 rounded-md mr-2 hover:bg-blue-100"
         >
           Edit

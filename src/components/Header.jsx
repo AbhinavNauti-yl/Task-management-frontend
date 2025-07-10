@@ -16,7 +16,6 @@ const Header = ({ setActiveTab, activeTab }) => {
     <div className="w-full md:w-64 bg-white shadow-md h-full">
       {/* Mobile top bar */}
       <div className="md:hidden flex justify-between items-center p-4 border-b">
-        <h1 className="text-xl font-semibold text-gray-800">Task Manager</h1>
         <button className="text-gray-500 focus:outline-none">
           <svg 
             className="h-6 w-6" 
@@ -37,7 +36,6 @@ const Header = ({ setActiveTab, activeTab }) => {
       {/* Sidebar content */}
       <div className="p-6">
         <div className="hidden md:block">
-          <h1 className="text-2xl font-bold text-gray-800">Task Manager</h1>
           <div className="mt-2 text-sm text-gray-600">
             Welcome, {user?.name || 'User'}!
           </div>
