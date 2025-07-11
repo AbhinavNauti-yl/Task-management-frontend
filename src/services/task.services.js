@@ -52,7 +52,7 @@ const createTask = async (task) => {
   try {
     const response = await axios.post(
       `http://localhost:8000/task/createTask`,
-      task ,
+      task,
       {
         withCredentials: true,
       }
@@ -71,7 +71,7 @@ const updateTask = async (id, task) => {
   try {
     const response = await axios.post(
       `http://localhost:8000/task/${id}`,
-      task ,
+      task,
       {
         withCredentials: true,
       }
@@ -86,4 +86,26 @@ const updateTask = async (id, task) => {
   }
 };
 
-export { taskAssignedToMe, taskCreatedByMe, getTaskById, updateTask, createTask };
+const deleteTask = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/task/${id}`, {
+      withCredentials: true,
+    });
+    return response.data.data;
+  } catch (error) {
+    if (error.response && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error(error.message);
+  }
+};
+
+export {
+  taskAssignedToMe,
+  taskCreatedByMe,
+  getTaskById,
+  updateTask,
+  createTask,
+  deleteTask,
+};
