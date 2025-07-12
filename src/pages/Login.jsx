@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { authService } from "../services/api";
-import { setLoading, loginSuccess, authError } from "../store/slices/authSlice";
-import { sampleLoginResponses, sampleUsers } from "../data/sampleData";
+import { loginSuccess } from "../store/slices/authSlice";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../services/user.services";
 

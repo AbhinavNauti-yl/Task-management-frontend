@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import TaskCard from "../components/TaskCard";
-import { taskService } from "../services/api";
-import { sampleTasks } from "../data/sampleData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteTask,
@@ -71,6 +68,9 @@ const Dashboard = () => {
 
   // running fetch task fn on reload andrerender
   useEffect(() => {
+    if(window.scrollY > 0) {
+      window.scrollTo(0, 0)
+    }
     fetchTasks();
   }, [activeTab, user, taskAssignedData, taskCreatedData]);
 
@@ -98,7 +98,7 @@ const Dashboard = () => {
           // In real app: fetchedTasks = await taskService.getOverdueTasks();
           // For demo, filter sample data
           const today = new Date();
-          fetchedTasks = sampleTasks.filter((task) => {
+          fetchedTasks = taskAssignedData?.filter((task) => {
             if (!task.dueDate || task.status === "Completed") return false;
             const dueDate = new Date(task.dueDate);
             return dueDate < today;

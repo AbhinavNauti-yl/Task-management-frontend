@@ -1,9 +1,10 @@
 import axios, { Axios } from "axios";
+import {URL} from '../constants/index.js'
 
 const taskAssignedToMe = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8000/task/assignedToMe`,
+      `${URL}/task/assignedToMe`,
       {
         withCredentials: true,
       }
@@ -20,7 +21,7 @@ const taskAssignedToMe = async () => {
 
 const taskCreatedByMe = async () => {
   try {
-    const response = await axios.get(`http://localhost:8000/task/createdByMe`, {
+    const response = await axios.get(`${URL}/task/createdByMe`, {
       withCredentials: true,
     });
     return response.data.data;
@@ -35,7 +36,7 @@ const taskCreatedByMe = async () => {
 
 const getTaskById = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8000/task/${id}`, {
+    const response = await axios.get(`${URL}/task/${id}`, {
       withCredentials: true,
     });
     return response.data.data;
@@ -51,7 +52,7 @@ const getTaskById = async (id) => {
 const createTask = async (task) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/task/createTask`,
+      `${URL}/task/createTask`,
       task,
       {
         withCredentials: true,
@@ -70,7 +71,7 @@ const createTask = async (task) => {
 const updateTask = async (id, task) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/task/${id}`,
+      `${URL}/task/${id}`,
       task,
       {
         withCredentials: true,
@@ -88,7 +89,7 @@ const updateTask = async (id, task) => {
 
 const deleteTask = async (id) => {
   try {
-    const response = await axios.delete(`http://localhost:8000/task/${id}`, {
+    const response = await axios.delete(`${URL}/task/${id}`, {
       withCredentials: true,
     });
     return response.data.data;

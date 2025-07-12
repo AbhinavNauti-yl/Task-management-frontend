@@ -12,8 +12,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateTask from "./pages/CreateTask";
 import EditTask from "./pages/EditTask";
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
-import {Toaster} from 'react-hot-toast'
+import { Toaster } from "react-hot-toast";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <EditTask />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 }
               />

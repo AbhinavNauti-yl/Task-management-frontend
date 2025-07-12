@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from 'react-hot-toast'
-import { taskService } from "../services/api";
-import { sampleUsers, sampleTasks } from "../data/sampleData";
 import {
   QueryClient,
   useMutation,

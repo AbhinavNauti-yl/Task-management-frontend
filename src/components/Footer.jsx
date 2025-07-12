@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -51,7 +50,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>Email: support@taskmanager.com</li>
-              <li>Phone: +1 (555) 123-4567</li>
+              <li>Phone: +91 750X9 81X9X</li>
             </ul>
           </div>
         </div>

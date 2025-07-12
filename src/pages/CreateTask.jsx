@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,8 +9,15 @@ import toast from "react-hot-toast";
 
 const CreateTask = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (window.scrollY > 0) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   const [task, setTask] = useState({
     title: "Sample Title",
     description: "Sample Description",
@@ -18,6 +25,7 @@ const CreateTask = () => {
     priority: "Low",
     status: "Pending",
   });
+
   const {
     register,
     handleSubmit,
