@@ -1,9 +1,10 @@
 import axios from "axios";
+import {URL} from '../constants/index.js'
 
 const login = async (data) => {
   try {
     const resposne = await axios.post(
-      `http://localhost:8000/user/logIn`,
+      `${URL}/user/logIn`,
       data,
       {
         withCredentials: true,
@@ -22,11 +23,27 @@ const login = async (data) => {
 const signup = async (data) => {
   try {
     const resposne = await axios.post(
-      `http://localhost:8000/user/signUp`,
+      `${URL}/user/signUp`,
       data,
       { withCredentials: true }
     );
-    console.log(resposne.data.data);
+    return resposne.data.data;
+  } catch (error) {
+    if (error.response && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error(error.message);
+  }
+};
+
+const updateUser = async (data) => {
+  try {
+    const resposne = await axios.post(
+      `${URL}/user/updateUser`,
+      data,
+      { withCredentials: true }
+    );
     return resposne.data.data;
   } catch (error) {
     if (error.response && error.response.data.message) {
@@ -39,7 +56,7 @@ const signup = async (data) => {
 
 const getAllUsers = async () => {
   try {
-    const response = await axios.get(`http://localhost:8000/user/getAllUsers`, {
+    const response = await axios.get(`${URL}/user/getAllUsers`, {
       withCredentials: true,
     });
 
@@ -53,4 +70,4 @@ const getAllUsers = async () => {
   }
 };
 
-export { login, getAllUsers, signup };
+export { login, getAllUsers, signup, updateUser };

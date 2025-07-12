@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import Header from "../components/Header";
+import { Link, useNavigate } from "react-router-dom";
 import TaskCard from "../components/TaskCard";
-import { taskService } from "../services/api";
-import { sampleTasks } from "../data/sampleData";
-import { useQuery } from "@tanstack/react-query";
-import { taskAssignedToMe, taskCreatedByMe } from "../services/task.services";
-
-let fistTime = true;
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteTask,
+  taskAssignedToMe,
+  taskCreatedByMe,
+} from "../services/task.services";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("assigned");
@@ -16,7 +16,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useSelector((state) => state.auth);
-
+  const navigate = useNavigate();
+  const queryClient = useQueryClient()
+  // fetching assigned tasks
   const {
     data: taskAssignedData,
     isPending,
@@ -28,6 +30,7 @@ const Dashboard = () => {
     queryKey: ["taskAssignedToMe"],
   });
 
+  // fetching created tasks
   const {
     data: taskCreatedData,
     isPending: taskCreatedDataPending,
@@ -39,7 +42,35 @@ const Dashboard = () => {
     queryKey: ["taskCreatedByMe"],
   });
 
+  const {
+    mutate: mutateDelete,
+    isPending: deletePending,
+    isError: deleteError,
+  } = useMutation({
+    queryFn: ["delete"],
+    mutationFn: (id) => deleteTask(id),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries([
+        "user",
+        "task",
+        "taskAssignedToMe",
+        "taskCreatedByMe",
+      ]);
+      toast.success("Task Deleted");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // running fetch task fn on reload andrerender
   useEffect(() => {
+    if(window.scrollY > 0) {
+      window.scrollTo(0, 0)
+    }
     fetchTasks();
   }, [activeTab, user, taskAssignedData, taskCreatedData]);
 
@@ -49,24 +80,15 @@ const Dashboard = () => {
       setError(null);
 
       let fetchedTasks = [];
-
-      // In a real app, this would come from the API
-      // For now, we'll use our sample data and filter it
       switch (activeTab) {
         case "assigned":
-          // Fetch tasks assigned to the current user
           if (user) {
-            // In real app: fetchedTasks = await taskService.getTasksByAssignee(user._id);
-            // For demo, filter sample data
             taskAssignedToMe();
             fetchedTasks = taskAssignedData;
           }
           break;
         case "created":
-          // Fetch tasks created by the current user
           if (user) {
-            // In real app: fetchedTasks = await taskService.getTasksByCreator(user._id);
-            // For demo, filter sample data
             taskCreatedByMe();
             fetchedTasks = taskCreatedData;
           }
@@ -76,7 +98,7 @@ const Dashboard = () => {
           // In real app: fetchedTasks = await taskService.getOverdueTasks();
           // For demo, filter sample data
           const today = new Date();
-          fetchedTasks = sampleTasks.filter((task) => {
+          fetchedTasks = taskAssignedData?.filter((task) => {
             if (!task.dueDate || task.status === "Completed") return false;
             const dueDate = new Date(task.dueDate);
             return dueDate < today;
@@ -99,18 +121,12 @@ const Dashboard = () => {
   };
 
   const handleDeleteTask = async (taskId) => {
-    try {
-      if (window.confirm("Are you sure you want to delete this task?")) {
-        // In a real app: await taskService.deleteTask(taskId);
-        // For demo, filter out the deleted task
-        setTasks(tasks.filter((task) => task._id !== taskId));
-      }
-    } catch (err) {
-      console.error("Error deleting task:", err);
-      alert("Failed to delete task. Please try again.");
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      mutateDelete(taskId);
     }
   };
 
+  // handeling logout
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -358,7 +374,7 @@ const Dashboard = () => {
                   <TaskCard
                     key={task._id}
                     task={task}
-                    onDelete={handleDeleteTask}
+                    onDelete={() => handleDeleteTask(task._id)}
                   />
                 ))}
               </div>
